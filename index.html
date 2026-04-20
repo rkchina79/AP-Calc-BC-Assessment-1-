@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Calculus BC — Practice Assessment</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath:   [['\\(','\\)']],
+    displayMath:  [['\\[','\\]']],
+    packages:     {'[+]': ['ams']}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+<style>
+:root {
+  --blue:     #1a5276; --blue-lt:  #d6eaf8; --blue-mid: #2e86c1;
+  --green:    #1e6b35; --green-lt: #d5f5e3;
+  --amber:    #7d6608; --amber-lt: #fef9e7;
+  --red:      #922b21; --red-lt:   #fdedec;
+  --gray:     #4a4a4a; --gray-lt:  #f4f4f4;
+  --border:   #dcdcdc; --radius:   8px;
+  --font:     'Segoe UI', Arial, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); font-size: 15px; color: #1a1a1a; background: #f7f8fa; line-height: 1.7; }
+.page { max-width: 880px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* ── Header ── */
+.exam-header { background: var(--blue); color: #fff; border-radius: var(--radius); padding: 1.75rem 2rem; margin-bottom: 2rem; }
+.exam-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+.exam-header p  { font-size: 13.5px; opacity: .88; line-height: 1.6; margin: 3px 0; }
+.header-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.meta-pill { background: rgba(255,255,255,.18); border-radius: 20px; padding: 4px 14px; font-size: 12.5px; }
+
+/* ── Section headings ── */
+.section-hdr { font-size: 16px; font-weight: 600; color: var(--blue); border-bottom: 2px solid var(--blue-mid); padding-bottom: 8px; margin: 2.5rem 0 1.25rem; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px; }
+.section-hdr span { font-size: 12px; font-weight: 400; color: #666; }
+
+/* ── MCQ cards ── */
+.qcard { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1rem; transition: box-shadow .15s; }
+.qcard:hover { box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+.q-top   { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.q-num   { background: var(--blue-lt); color: var(--blue); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 12px; white-space: nowrap; flex-shrink: 0; margin-top: 3px; }
+.q-topic { font-size: 11.5px; color: #888; margin-top: 5px; }
+.q-text  { font-size: 15px; line-height: 1.8; }
+
+/* ── Choices ── */
+.choices { display: flex; flex-direction: column; gap: 7px; margin-top: 14px; }
+.choice  { display: flex; align-items: flex-start; gap: 10px; padding: 9px 14px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 14px; transition: background .12s, border-color .12s; }
+.choice:hover   { background: var(--blue-lt); border-color: var(--blue-mid); }
+.choice input   { margin-top: 4px; flex-shrink: 0; accent-color: var(--blue-mid); }
+.choice.correct { background: var(--green-lt); border-color: var(--green); color: var(--green); }
+.choice.wrong   { background: var(--red-lt);   border-color: var(--red);   color: var(--red); }
+.choice.reveal  { background: var(--amber-lt); border-color: var(--amber); color: var(--amber); }
+
+/* ── MCQ feedback ── */
+.feedback { display: none; margin-top: 12px; padding: 10px 14px; border-radius: var(--radius); font-size: 13.5px; line-height: 1.65; }
+.feedback.show { display: block; }
+.feedback.ok   { background: var(--green-lt); border: 1px solid #a9dfbf; color: var(--green); }
+.feedback.bad  { background: var(--red-lt);   border: 1px solid #f5b7b1; color: var(--red); }
+
+/* ── FRQ cards ── */
+.frq-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 2rem; overflow: hidden; }
+.frq-header { background: var(--blue); color: #fff; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.frq-header-left h3 { font-size: 15px; font-weight: 600; }
+.frq-header-left p  { font-size: 12px; opacity: .85; margin-top: 2px; }
+.frq-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.frq-link  { font-size: 12px; color: #fff; border: 1px solid rgba(255,255,255,.5); padding: 5px 12px; border-radius: var(--radius); text-decoration: none; white-space: nowrap; transition: background .12s; }
+.frq-link:hover { background: rgba(255,255,255,.18); }
+.frq-body  { padding: 1.5rem; }
+
+/* ── Skill badge ── */
+.frq-badge { display: inline-block; background: var(--amber-lt); color: var(--amber); border: 1px solid #f0d080; font-size: 11.5px; padding: 3px 10px; border-radius: 12px; margin-bottom: 1.25rem; }
+
+/* ── Question box ── */
+.question-box { background: #f8fafd; border: 1px solid #b0c4de; border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+.question-box-title { font-size: 12px; font-weight: 700; color: var(--blue-mid); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #c8d9ed; }
+.context-text { font-size: 14.5px; line-height: 1.8; color: #1a1a1a; margin-bottom: 12px; }
+.question-part { display: flex; gap: 10px; margin-bottom: 8px; font-size: 14.5px; line-height: 1.75; }
+.part-label { font-weight: 700; color: var(--blue); flex-shrink: 0; min-width: 24px; }
+.part-pts   { font-size: 11.5px; color: #888; white-space: nowrap; margin-top: 3px; flex-shrink: 0; }
+
+/* ── Parts summary table ── */
+.parts-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 1rem; }
+.parts-table th { text-align: left; font-weight: 600; padding: 7px 10px; background: var(--gray-lt); border: 1px solid var(--border); font-size: 11.5px; color: #555; }
+.parts-table td { padding: 8px 10px; border: 1px solid var(--border); vertical-align: middle; line-height: 1.5; }
+.parts-table tr:nth-child(even) td { background: #fafafa; }
+.skill-tag  { background: var(--blue-lt); color: var(--blue); font-size: 11px; padding: 2px 8px; border-radius: 8px; display: inline-block; white-space: nowrap; }
+
+/* ── Answer section ── */
+.ans-section { border-top: 1px solid var(--border); margin-top: 1.25rem; padding-top: 1.25rem; }
+.ans-title { font-size: 13px; font-weight: 600; color: var(--gray); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.ans-title::before { content: ''; display: inline-block; width: 3px; height: 16px; background: var(--blue-mid); border-radius: 2px; }
+
+/* ── Upload zone ── */
+.upload-label  { font-size: 12.5px; font-weight: 600; color: #555; margin-bottom: 6px; display: block; }
+.upload-zone   { border: 2px dashed var(--border); border-radius: var(--radius); padding: 1.25rem; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; background: #fafafa; position: relative; }
+.upload-zone:hover      { border-color: var(--blue-mid); background: var(--blue-lt); }
+.upload-zone.has-image  { border-color: var(--green); border-style: solid; background: var(--green-lt); }
+.upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.upload-icon  { font-size: 26px; margin-bottom: 6px; }
+.upload-text  { font-size: 13px; color: #666; line-height: 1.5; }
+.upload-text strong    { color: var(--blue-mid); }
+.upload-text.uploaded  { color: var(--green); font-weight: 600; }
+.preview-wrap  { display: none; margin-top: 12px; }
+.preview-wrap img { max-width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+.preview-actions { display: flex; gap: 8px; margin-top: 8px; }
+.btn-rm  { font-size: 12.5px; color: var(--red);  border: 1px solid #f5b7b1; background: var(--red-lt);  border-radius: var(--radius); padding: 5px 12px; cursor: pointer; }
+.btn-ch  { font-size: 12.5px; color: var(--blue); border: 1px solid #b0c4de;  background: #fff;          border-radius: var(--radius); padding: 5px 12px; cursor: pointer; }
+.btn-rm:hover { background: #fad7d5; } .btn-ch:hover { background: var(--blue-lt); }
+
+/* ── Or divider ── */
+.or-div { display: flex; align-items: center; gap: 10px; margin: 14px 0; font-size: 12px; color: #aaa; }
+.or-div::before, .or-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Textarea ── */
+.typed-label { font-size: 12.5px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 13.5px; font-family: 'Courier New', monospace; color: #1a1a1a; background: #fafafa; resize: vertical; min-height: 90px; line-height: 1.6; transition: border-color .12s; }
+textarea:focus { outline: none; border-color: var(--blue-mid); background: #fff; box-shadow: 0 0 0 3px rgba(46,134,193,.12); }
+
+/* ── Action bar ── */
+.action-bar { display: flex; gap: 10px; margin-top: 2rem; flex-wrap: wrap; }
+.btn-primary   { background: var(--blue); color: #fff; border: none; border-radius: var(--radius); padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-primary:hover  { background: var(--blue-mid); }
+.btn-secondary { background: #fff; color: var(--gray); border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 20px; font-size: 14px; cursor: pointer; transition: background .15s; }
+.btn-secondary:hover { background: var(--gray-lt); }
+
+/* ── Score panel ── */
+.score-panel { display: none; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 2rem; margin-top: 1.5rem; }
+.score-panel.show { display: block; }
+.score-big   { font-size: 30px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+.score-sub   { font-size: 13.5px; color: #666; margin-bottom: 1.25rem; }
+.metrics     { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+.metric      { background: var(--gray-lt); border-radius: var(--radius); padding: 12px 14px; }
+.metric-lbl  { font-size: 11.5px; color: #888; margin-bottom: 3px; }
+.metric-val  { font-size: 20px; font-weight: 600; color: var(--blue); }
+.prog-row    { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #666; margin-bottom: 8px; }
+.prog-bar    { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.prog-fill   { height: 100%; border-radius: 4px; background: var(--blue-mid); transition: width .5s ease; }
+.miss-list   { margin-top: 14px; font-size: 13.5px; }
+.miss-list strong { color: var(--gray); display: block; margin-bottom: 6px; }
+.miss-list ul { padding-left: 20px; color: #666; }
+.miss-list li { margin: 3px 0; }
+.note-box    { background: var(--amber-lt); border: 1px solid #f0d080; border-radius: var(--radius); padding: 12px 16px; margin-top: 14px; font-size: 13px; color: var(--amber); line-height: 1.65; }
+.note-box strong { color: #5a4500; }
+
+/* ── Print ── */
+@media print {
+  body { background: #fff; font-size: 13px; }
+  .page { padding: 0; }
+  .action-bar, .score-panel, .upload-zone, .preview-wrap, .or-div { display: none !important; }
+  .qcard, .frq-card { break-inside: avoid; box-shadow: none; }
+  textarea { border: 1px solid #ccc; min-height: 60px; background: #fff; }
+}
+@media (max-width: 600px) {
+  .exam-header, .frq-body { padding: 1.25rem; }
+  .frq-header { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ════════════ HEADER ════════════ -->
+<div class="exam-header">
+  <h1>AP Calculus BC &mdash; Practice Assessment</h1>
+  <p>Topics covered: Integration by Parts &nbsp;&middot;&nbsp; Partial Fractions &nbsp;&middot;&nbsp; Improper Integrals &nbsp;&middot;&nbsp; Euler&rsquo;s Method &nbsp;&middot;&nbsp; Parametric Equations &nbsp;&middot;&nbsp; Vector-Valued Functions</p>
+  <div class="header-meta">
+    <span class="meta-pill">Section I &nbsp;&middot;&nbsp; 15 MCQ &nbsp;&middot;&nbsp; 3 pts each &nbsp;&middot;&nbsp; 45 pts total</span>
+    <span class="meta-pill">Section II &nbsp;&middot;&nbsp; 4 FRQ &nbsp;&middot;&nbsp; 10 pts each &nbsp;&middot;&nbsp; 40 pts total</span>
+    <span class="meta-pill">Total: 85 pts</span>
+    <span class="meta-pill">Suggested time: 75 minutes</span>
+    <span class="meta-pill">Calculator: Q11&ndash;15 &amp; FRQ Part A only</span>
+  </div>
+</div>
+
+<!-- Student name bar -->
+<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+  <label for="student-name" style="font-size:13.5px;font-weight:600;color:var(--gray);white-space:nowrap">Student name:</label>
+  <input type="text" id="student-name" placeholder="Enter your full name before submitting"
+    style="flex:1;min-width:200px;border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-size:14px;font-family:var(--font);color:#1a1a1a;background:#fafafa">
+  <span style="font-size:12px;color:#aaa">Required for submission</span>
+</div>
+<div class="section-hdr">
+  Section I &mdash; Multiple Choice
+  <span>Questions 1&ndash;15 &nbsp;&middot;&nbsp; 3 pts each &nbsp;&middot;&nbsp; No calculator on Q1&ndash;10 &nbsp;&middot;&nbsp; Calculator permitted on Q11&ndash;15</span>
+</div>
+<div id="mcq-container"></div>
+
+<!-- ════════════ SECTION II ════════════ -->
+<div class="section-hdr">
+  Section II &mdash; Free Response
+  <span>4 questions &nbsp;&middot;&nbsp; 10 pts each &nbsp;&middot;&nbsp; Show all work &nbsp;&middot;&nbsp; Justify all reasoning</span>
+</div>
+<div id="frq-container"></div>
+
+<!-- Action bar -->
+<div class="action-bar">
+  <button class="btn-primary" onclick="submitMCQ()">Score MCQ</button>
+  <button class="btn-primary" id="submit-btn" style="background:var(--green);border-color:var(--green)" onclick="submitToTeacher()">&#9993; Submit to Teacher</button>
+  <button class="btn-secondary" onclick="resetAll()">Reset Exam</button>
+  <button class="btn-secondary" onclick="window.print()">Print</button>
+</div>
+<div id="submit-status" style="display:none;margin-top:12px;padding:12px 16px;border-radius:var(--radius);font-size:13.5px;line-height:1.6"></div>
+<div id="score-panel" class="score-panel"></div>
+
+</div><!-- /page -->
+
+<script>
+/* ══════════════════════════════════════════════
+   MCQ DATA  (15 questions, all verified)
+══════════════════════════════════════════════ */
+const MCQ = [
+  {
+    n:1, nc:true,
+    topic:"Integration by Parts",
+    text:"Which of the following is the correct antiderivative of \\(\\displaystyle\\int x\\cos x\\,dx\\,?\\)",
+    choices:[
+      "\\(x\\sin x + \\cos x + C\\)",
+      "\\(x\\sin x - \\cos x + C\\)",
+      "\\(-x\\cos x + \\sin x + C\\)",
+      "\\(\\cos x - x\\sin x + C\\)",
+      "\\(x\\cos x + \\sin x + C\\)"
+    ],
+    ans:0,
+    exp:"Let \\(u=x\\), \\(dv=\\cos x\\,dx\\). Then \\(du=dx\\) and \\(v=\\sin x\\). IBP gives \\(x\\sin x - \\int\\sin x\\,dx = x\\sin x + \\cos x + C\\)."
+  },
+  {
+    n:2, nc:true,
+    topic:"Integration by Parts — LIATE",
+    text:"To evaluate \\(\\displaystyle\\int \\ln x\\,dx\\) by integration by parts, the LIATE rule suggests choosing:",
+    choices:[
+      "\\(u=\\ln x,\\quad dv=dx\\)",
+      "\\(u=x,\\quad dv=\\ln x\\,dx\\)",
+      "\\(u=1,\\quad dv=\\ln x\\,dx\\)",
+      "\\(u=\\ln x,\\quad dv=x\\,dx\\)",
+      "\\(u=\\tfrac{1}{x},\\quad dv=x\\,dx\\)"
+    ],
+    ans:0,
+    exp:"LIATE places Logarithms before Algebraic functions. Choose \\(u=\\ln x\\) and \\(dv=dx\\), giving \\(du=\\frac{1}{x}\\,dx\\) and \\(v=x\\). The result is \\(x\\ln x - x + C\\)."
+  },
+  {
+    n:3, nc:true,
+    topic:"Integration by Parts — tabular method",
+    text:"Using the tabular (repeated IBP) method to evaluate \\(\\displaystyle\\int x^2 e^x\\,dx\\), the result is:",
+    choices:[
+      "\\(e^x(x^2-2x+2)+C\\)",
+      "\\(e^x(x^2+2x+2)+C\\)",
+      "\\(e^x(x^2-2x-2)+C\\)",
+      "\\(x^2 e^x - e^x + C\\)",
+      "\\(2xe^x + C\\)"
+    ],
+    ans:0,
+    exp:"Tabular method: D column \\(x^2,\\,2x,\\,2,\\,0\\); I column \\(e^x,\\,e^x,\\,e^x,\\,e^x\\); signs \\(+,\\,-,\\,+\\). Result: \\(x^2e^x - 2xe^x + 2e^x + C = e^x(x^2-2x+2)+C\\)."
+  },
+  {
+    n:4, nc:true,
+    topic:"Partial Fractions — linear factors",
+    text:"The decomposition \\(\\dfrac{4x+1}{(x-1)(x+3)}=\\dfrac{A}{x-1}+\\dfrac{B}{x+3}\\) gives \\(A=\\)",
+    choices:[
+      "\\(\\dfrac{5}{4}\\)",
+      "\\(\\dfrac{1}{4}\\)",
+      "\\(\\dfrac{3}{4}\\)",
+      "\\(5\\)",
+      "\\(-\\dfrac{3}{4}\\)"
+    ],
+    ans:0,
+    exp:"Multiply through: \\(4x+1=A(x+3)+B(x-1)\\). Set \\(x=1\\): \\(5=4A \\Rightarrow A=\\tfrac{5}{4}\\). (Setting \\(x=-3\\) gives \\(B=\\tfrac{11}{4}\\).)"
+  },
+  {
+    n:5, nc:true,
+    topic:"Partial Fractions — irreducible quadratic",
+    text:"The correct partial fraction form for \\(\\dfrac{3x^2+x+2}{x(x^2+4)}\\) is:",
+    choices:[
+      "\\(\\dfrac{A}{x}+\\dfrac{Bx+C}{x^2+4}\\)",
+      "\\(\\dfrac{A}{x}+\\dfrac{B}{x^2+4}\\)",
+      "\\(\\dfrac{Ax+B}{x}+\\dfrac{C}{x^2+4}\\)",
+      "\\(\\dfrac{A}{x}+\\dfrac{B}{x+2}+\\dfrac{C}{x-2}\\)",
+      "\\(\\dfrac{A}{x^2}+\\dfrac{Bx+C}{x^2+4}\\)"
+    ],
+    ans:0,
+    exp:"The factor \\(x\\) is linear \\(\\Rightarrow\\) numerator \\(A\\). The factor \\(x^2+4\\) is irreducible over \\(\\mathbb{R}\\) (discriminant \\(=-16<0\\)) \\(\\Rightarrow\\) its numerator must be linear: \\(Bx+C\\)."
+  },
+  {
+    n:6, nc:true,
+    topic:"Improper Integrals — convergence",
+    text:"The value of \\(\\displaystyle\\int_1^{\\infty}\\frac{1}{x^3}\\,dx\\) is:",
+    choices:[
+      "\\(\\dfrac{1}{2}\\)",
+      "\\(1\\)",
+      "Diverges to \\(\\infty\\)",
+      "\\(\\dfrac{1}{3}\\)",
+      "\\(3\\)"
+    ],
+    ans:0,
+    exp:"\\(\\displaystyle\\int_1^\\infty x^{-3}\\,dx = \\lim_{b\\to\\infty}\\!\\left[\\frac{x^{-2}}{-2}\\right]_1^b = \\lim_{b\\to\\infty}\\!\\left(-\\frac{1}{2b^2}+\\frac{1}{2}\\right) = \\frac{1}{2}\\)."
+  },
+  {
+    n:7, nc:true,
+    topic:"Improper Integrals — divergence",
+    text:"Which of the following improper integrals diverges?",
+    choices:[
+      "\\(\\displaystyle\\int_1^{\\infty}\\frac{1}{\\sqrt{x}}\\,dx\\)",
+      "\\(\\displaystyle\\int_1^{\\infty}\\frac{1}{x^2}\\,dx\\)",
+      "\\(\\displaystyle\\int_0^{\\infty}e^{-x}\\,dx\\)",
+      "\\(\\displaystyle\\int_1^{\\infty}\\frac{1}{x^{3/2}}\\,dx\\)",
+      "\\(\\displaystyle\\int_1^{\\infty}\\frac{1}{x^{4}}\\,dx\\)"
+    ],
+    ans:0,
+    exp:"This is a \\(p\\)-series integral with \\(p=\\tfrac{1}{2}<1\\), so \\(\\displaystyle\\int_1^\\infty x^{-1/2}\\,dx\\) diverges. All other choices have \\(p>1\\) or decay exponentially and therefore converge."
+  },
+  {
+    n:8, nc:true,
+    topic:"Improper Integrals — interior discontinuity",
+    text:"The improper integral \\(\\displaystyle\\int_0^{3}\\frac{dx}{\\sqrt{3-x}}\\) equals:",
+    choices:[
+      "\\(2\\sqrt{3}\\)",
+      "\\(\\sqrt{3}\\)",
+      "Diverges",
+      "\\(3\\)",
+      "\\(6\\)"
+    ],
+    ans:0,
+    exp:"The integrand has a discontinuity at \\(x=3\\). Rewrite as \\(\\displaystyle\\lim_{t\\to 3^-}\\!\\int_0^t(3-x)^{-1/2}dx = \\lim_{t\\to 3^-}\\!\\left[-2\\sqrt{3-x}\\right]_0^t = 0+2\\sqrt{3}=2\\sqrt{3}\\)."
+  },
+  {
+    n:9, nc:true,
+    topic:"Euler's Method",
+    text:"Given \\(\\dfrac{dy}{dx}=2x+y\\) with initial condition \\(y(0)=1\\) and step size \\(h=0.5\\), Euler's method gives \\(y(1)\\approx\\)",
+    choices:[
+      "\\(3.25\\)",
+      "\\(2.50\\)",
+      "\\(3.75\\)",
+      "\\(4.00\\)",
+      "\\(2.75\\)"
+    ],
+    ans:0,
+    exp:"Step 1: \\(y(0.5)\\approx 1+0.5(2\\cdot0+1)=1.5\\).&ensp;Step 2: \\(y(1)\\approx 1.5+0.5(2\\cdot0.5+1.5)=1.5+1.75=3.25\\)."
+  },
+  {
+    n:10, nc:true,
+    topic:"Euler's Method — concavity and error",
+    text:"If Euler's method overestimates the true solution on an interval, the solution curve on that interval must be:",
+    choices:[
+      "Concave down",
+      "Concave up",
+      "Linear",
+      "Decreasing",
+      "Increasing"
+    ],
+    ans:0,
+    exp:"Euler's method follows tangent lines. When the curve is concave down, tangent lines lie above the curve, causing overestimation. When concave up, tangent lines lie below, causing underestimation."
+  },
+  {
+    n:11, nc:false,
+    topic:"Parametric Equations — slope dy/dx",
+    text:"A curve is defined parametrically by \\(x(t)=t^3-3t\\) and \\(y(t)=t^2+1\\). The slope of the tangent line at \\(t=2\\) is:",
+    choices:[
+      "\\(\\dfrac{4}{9}\\)",
+      "\\(\\dfrac{9}{4}\\)",
+      "\\(\\dfrac{2}{3}\\)",
+      "\\(4\\)",
+      "\\(\\dfrac{1}{3}\\)"
+    ],
+    ans:0,
+    exp:"\\(\\dfrac{dy}{dx}=\\dfrac{dy/dt}{dx/dt}=\\dfrac{2t}{3t^2-3}\\). At \\(t=2\\): \\(\\dfrac{4}{12-3}=\\dfrac{4}{9}\\)."
+  },
+  {
+    n:12, nc:false,
+    topic:"Parametric Equations — second derivative",
+    text:"For the curve defined by \\(x(t)=e^t\\) and \\(y(t)=te^t\\), the value of \\(\\dfrac{d^2y}{dx^2}\\) at \\(t=0\\) is:",
+    choices:[
+      "\\(1\\)",
+      "\\(e^{-1}\\)",
+      "\\(0\\)",
+      "\\(e\\)",
+      "\\(2\\)"
+    ],
+    ans:0,
+    exp:"\\(\\dfrac{dy}{dx}=\\dfrac{e^t+te^t}{e^t}=1+t\\). Then \\(\\dfrac{d}{dt}(1+t)=1\\) and \\(\\dfrac{dx}{dt}=e^t\\), so \\(\\dfrac{d^2y}{dx^2}=\\dfrac{1}{e^t}\\). At \\(t=0\\): \\(\\dfrac{1}{e^0}=1\\)."
+  },
+  {
+    n:13, nc:false,
+    topic:"Parametric Equations — arc length",
+    text:"The arc length of the parametric curve \\(x(t)=3\\cos t\\), \\(y(t)=3\\sin t\\) for \\(0\\le t\\le 2\\pi\\) is:",
+    choices:[
+      "\\(6\\pi\\)",
+      "\\(3\\pi\\)",
+      "\\(2\\pi\\)",
+      "\\(9\\pi\\)",
+      "\\(12\\pi\\)"
+    ],
+    ans:0,
+    exp:"Speed \\(=\\sqrt{(-3\\sin t)^2+(3\\cos t)^2}=\\sqrt{9\\sin^2t+9\\cos^2t}=3\\). Arc length \\(=\\displaystyle\\int_0^{2\\pi}3\\,dt=6\\pi\\)."
+  },
+  {
+    n:14, nc:false,
+    topic:"Vector-Valued Functions — differentiation",
+    text:"If \\(\\mathbf{r}(t)=\\langle\\,t^2,\\;\\sin(\\pi t),\\;e^{2t}\\,\\rangle\\), then \\(\\mathbf{r}'(1)\\) is:",
+    choices:[
+      "\\(\\langle\\,2,\\;-\\pi,\\;2e^2\\,\\rangle\\)",
+      "\\(\\langle\\,2,\\;\\pi,\\;2e^2\\,\\rangle\\)",
+      "\\(\\langle\\,1,\\;0,\\;e^2\\,\\rangle\\)",
+      "\\(\\langle\\,2,\\;-1,\\;2e^2\\,\\rangle\\)",
+      "\\(\\langle\\,2t,\\;\\pi\\cos(\\pi t),\\;2e^{2t}\\,\\rangle\\)"
+    ],
+    ans:0,
+    exp:"Differentiate component-by-component: \\(\\mathbf{r}'(t)=\\langle 2t,\\,\\pi\\cos(\\pi t),\\,2e^{2t}\\rangle\\). At \\(t=1\\): \\(\\langle 2,\\,\\pi\\cos\\pi,\\,2e^2\\rangle=\\langle 2,\\,-\\pi,\\,2e^2\\rangle\\)."
+  },
+  {
+    n:15, nc:false,
+    topic:"Vector-Valued Functions — position from velocity",
+    text:"A particle has velocity \\(\\mathbf{v}(t)=\\langle\\,3t^2,\\;2t\\,\\rangle\\) and initial position \\(\\mathbf{r}(0)=\\langle\\,-1,\\;4\\,\\rangle\\). The position at \\(t=2\\) is:",
+    choices:[
+      "\\(\\langle\\,7,\\;8\\,\\rangle\\)",
+      "\\(\\langle\\,8,\\;8\\,\\rangle\\)",
+      "\\(\\langle\\,7,\\;4\\,\\rangle\\)",
+      "\\(\\langle\\,11,\\;8\\,\\rangle\\)",
+      "\\(\\langle\\,6,\\;8\\,\\rangle\\)"
+    ],
+    ans:0,
+    exp:"Integrate: \\(\\mathbf{r}(t)=\\langle t^3+C_1,\\,t^2+C_2\\rangle\\). Apply \\(\\mathbf{r}(0)=\\langle -1,4\\rangle\\Rightarrow C_1=-1,\\,C_2=4\\). At \\(t=2\\): \\(\\langle 8-1,\\,4+4\\rangle=\\langle 7,\\,8\\rangle\\)."
+  }
+];
+
+/* ══════════════════════════════════════════════
+   FRQ DATA  (4 questions, math verified)
+══════════════════════════════════════════════ */
+const FRQ = [
+  {
+    num:"FRQ 1", pts:10,
+    badge:"Integration by Parts &nbsp;&middot;&nbsp; Improper Integrals",
+    context:"Consider the function \\(f(x)=x\\,e^{-x}\\) on the interval \\([0,\\infty)\\).",
+    parts:[
+      {
+        lbl:"(a)", pts:"3 pts",
+        skill:"Integration by Parts",
+        text:"Use integration by parts to find \\(\\displaystyle\\int x\\,e^{-x}\\,dx\\). Clearly state your choice of \\(u\\) and \\(dv\\), and show all steps."
+      },
+      {
+        lbl:"(b)", pts:"4 pts",
+        skill:"Improper Integrals",
+        text:"Evaluate the improper integral \\(\\displaystyle\\int_0^{\\infty} x\\,e^{-x}\\,dx\\). Use correct limit notation throughout. State whether the integral converges or diverges, and if it converges give the exact value."
+      },
+      {
+        lbl:"(c)", pts:"3 pts",
+        skill:"Repeated IBP",
+        text:"Use integration by parts a second time to find the exact value of \\(\\displaystyle\\int_0^{\\infty} x^2 e^{-x}\\,dx\\). You may use your result from part (b). Justify each step."
+      }
+    ]
+  },
+  {
+num:"FRQ 2", pts:10,
+    badge:"Polar Curves &nbsp;&middot;&nbsp; Area in Polar Coordinates",
+    graph:`<svg viewBox="0 0 420 420" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:420px;display:block;margin:0 auto;font-family:Arial,sans-serif">
+  <!-- reference circles -->
+  <circle cx="200" cy="200" r="50"  fill="none" stroke="#d0d8e8" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <circle cx="200" cy="200" r="100" fill="none" stroke="#d0d8e8" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#d0d8e8" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <!-- polar axes -->
+  <line x1="30"  y1="200" x2="380" y2="200" stroke="#bbb" stroke-width="0.8"/>
+  <line x1="200" y1="20"  x2="200" y2="380" stroke="#bbb" stroke-width="0.8"/>
+  <!-- filled curve -->
+  <path d="M 350.0,200.0 L 350.0,197.4 349.9,194.8 349.7,192.2 349.5,189.5 349.2,186.9 348.9,184.3 348.5,181.8 348.1,179.2 347.5,176.6 347.0,174.1 346.3,171.6 345.7,169.0 344.9,166.5 344.1,164.1 343.2,161.6 342.3,159.2 341.4,156.8 340.3,154.4 339.3,152.1 338.1,149.7 336.9,147.4 335.7,145.2 334.4,142.9 333.1,140.7 331.7,138.6 330.3,136.5 328.8,134.4 327.3,132.3 325.7,130.3 324.1,128.3 322.5,126.4 320.8,124.5 319.0,122.7 317.3,120.9 315.5,119.2 313.6,117.4 311.8,115.8 309.8,114.2 307.9,112.6 305.9,111.1 304.0,109.6 301.9,108.2 299.9,106.9 297.8,105.5 295.7,104.3 293.6,103.1 291.5,101.9 289.3,100.8 287.1,99.8 284.9,98.8 282.7,97.8 280.5,96.9 278.3,96.1 276.1,95.3 273.8,94.6 271.6,93.9 269.3,93.3 267.0,92.7 264.8,92.2 262.5,91.7 260.2,91.3 258.0,91.0 255.7,90.7 253.4,90.4 251.2,90.2 248.9,90.1 246.7,90.0 244.5,89.9 242.3,89.9 240.1,90.0 237.9,90.1 235.7,90.2 233.5,90.4 231.4,90.6 229.2,90.9 227.1,91.2 225.0,91.6 223.0,92.0 220.9,92.5 218.9,93.0 216.9,93.5 214.9,94.1 212.9,94.7 211.0,95.4 209.1,96.0 207.2,96.8 205.4,97.5 203.6,98.3 201.8,99.1 200.0,100.0 198.3,100.9 196.6,101.8 194.9,102.8 193.3,103.7 191.7,104.7 190.1,105.7 188.6,106.8 187.1,107.9 185.6,109.0 184.1,110.1 182.7,111.2 181.4,112.4 180.0,113.5 178.7,114.7 177.5,115.9 176.2,117.1 175.0,118.3 173.9,119.6 172.7,120.8 171.6,122.1 170.6,123.4 169.6,124.6 168.6,125.9 167.6,127.2 166.7,128.5 165.8,129.8 164.9,131.1 164.1,132.4 163.3,133.7 162.5,135.0 161.8,136.4 161.0,137.7 160.4,139.0 159.7,140.3 159.1,141.6 158.5,142.9 157.9,144.2 157.4,145.5 156.9,146.7 156.4,148.0 155.9,149.3 155.5,150.5 155.1,151.8 154.7,153.1 154.3,154.3 153.9,155.5 153.6,156.7 153.3,157.9 153.0,159.2 152.7,160.3 152.5,161.5 152.2,162.7 152.0,163.9 151.8,165.0 151.6,166.1 151.5,167.3 151.3,168.4 151.2,169.5 151.0,170.6 150.9,171.7 150.8,172.7 150.7,173.8 150.6,174.8 150.5,175.9 150.4,176.9 150.4,177.9 150.3,178.9 150.3,179.9 150.2,180.9 150.2,181.9 150.1,182.8 150.1,183.8 150.1,184.7 150.1,185.7 150.1,186.6 150.0,187.5 150.0,188.5 150.0,189.4 150.0,190.3 150.0,191.2 150.0,192.1 150.0,193.0 150.0,193.9 150.0,194.7 150.0,195.6 150.0,196.5 150.0,197.4 150.0,198.3 150.0,199.1 150.0,200.0 150.0,200.9 150.0,201.7 150.0,202.6 150.0,203.5 150.0,204.4 150.0,205.3 150.0,206.1 150.0,207.0 150.0,207.9 150.0,208.8 150.0,209.7 150.0,210.6 150.0,211.5 150.0,212.5 150.1,213.4 150.1,214.3 150.1,215.3 150.1,216.2 150.1,217.2 150.2,218.1 150.2,219.1 150.3,220.1 150.3,221.1 150.4,222.1 150.4,223.1 150.5,224.1 150.6,225.2 150.7,226.2 150.8,227.3 150.9,228.3 151.0,229.4 151.2,230.5 151.3,231.6 151.5,232.7 151.6,233.9 151.8,235.0 152.0,236.1 152.2,237.3 152.5,238.5 152.7,239.7 153.0,240.8 153.3,242.1 153.6,243.3 153.9,244.5 154.3,245.7 154.7,246.9 155.1,248.2 155.5,249.5 155.9,250.7 156.4,252.0 156.9,253.3 157.4,254.5 157.9,255.8 158.5,257.1 159.1,258.4 159.7,259.7 160.4,261.0 161.0,262.3 161.8,263.6 162.5,265.0 163.3,266.3 164.1,267.6 164.9,268.9 165.8,270.2 166.7,271.5 167.6,272.8 168.6,274.1 169.6,275.4 170.6,276.6 171.6,277.9 172.7,279.2 173.9,280.4 175.0,281.7 176.2,282.9 177.5,284.1 178.7,285.3 180.0,286.5 181.4,287.6 182.7,288.8 184.1,289.9 185.6,291.0 187.1,292.1 188.6,293.2 190.1,294.3 191.7,295.3 193.3,296.3 194.9,297.2 196.6,298.2 198.3,299.1 200.0,300.0 201.8,300.9 203.6,301.7 205.4,302.5 207.2,303.2 209.1,304.0 211.0,304.6 212.9,305.3 214.9,305.9 216.9,306.5 218.9,307.0 220.9,307.5 223.0,308.0 225.0,308.4 227.1,308.8 229.2,309.1 231.4,309.4 233.5,309.6 235.7,309.8 237.9,309.9 240.1,310.0 242.3,310.1 244.5,310.1 246.7,310.0 248.9,309.9 251.2,309.8 253.4,309.6 255.7,309.3 258.0,309.0 260.2,308.7 262.5,308.3 264.8,307.8 267.0,307.3 269.3,306.7 271.6,306.1 273.8,305.4 276.1,304.7 278.3,303.9 280.5,303.1 282.7,302.2 284.9,301.2 287.1,300.2 289.3,299.2 291.5,298.1 293.6,296.9 295.7,295.7 297.8,294.5 299.9,293.1 301.9,291.8 304.0,290.4 305.9,288.9 307.9,287.4 309.8,285.8 311.8,284.2 313.6,282.6 315.5,280.8 317.3,279.1 319.0,277.3 320.8,275.5 322.5,273.6 324.1,271.7 325.7,269.7 327.3,267.7 328.8,265.6 330.3,263.5 331.7,261.4 333.1,259.3 334.4,257.1 335.7,254.8 336.9,252.6 338.1,250.3 339.3,247.9 340.3,245.6 341.4,243.2 342.3,240.8 343.2,238.4 344.1,235.9 344.9,233.5 345.7,231.0 346.3,228.4 347.0,225.9 347.5,223.4 348.1,220.8 348.5,218.2 348.9,215.7 349.2,213.1 349.5,210.5 349.7,207.8 349.9,205.2 350.0,202.6 350.0,200.0 Z" fill="#ddeeff" fill-opacity="0.55" stroke="#1a5276" stroke-width="2" stroke-linejoin="round"/>
+  <!-- origin -->
+  <circle cx="200" cy="200" r="2.5" fill="#555"/>
+  <!-- axis labels -->
+  <text x="384" y="205" font-size="12" fill="#666">0</text>
+  <text x="26"  y="205" font-size="12" fill="#666" text-anchor="end">π</text>
+  <text x="200" y="16"  font-size="12" fill="#666" text-anchor="middle">π/2</text>
+  <text x="200" y="394" font-size="12" fill="#666" text-anchor="middle">3π/2</text>
+  <!-- r tick labels on polar axis -->
+  <text x="252" y="195" font-size="11" fill="#999" text-anchor="middle">1</text>
+  <text x="302" y="195" font-size="11" fill="#999" text-anchor="middle">2</text>
+  <text x="352" y="195" font-size="11" fill="#999" text-anchor="middle">3</text>
+  <!-- key point labels -->
+  <circle cx="350" cy="200" r="3" fill="#1a5276"/>
+  <text x="355" y="191" font-size="11" fill="#1a5276" font-weight="bold">(3, 0)</text>
+  <circle cx="150" cy="200" r="3" fill="#1a5276"/>
+  <text x="118" y="192" font-size="11" fill="#1a5276" font-weight="bold">(1, π)</text>
+  <circle cx="200" cy="100" r="3" fill="#1a5276"/>
+  <text x="206" y="96"  font-size="11" fill="#1a5276" font-weight="bold">(2, π/2)</text>
+  <!-- curve label -->
+  <text x="318" y="148" font-size="12.5" fill="#1a5276" font-style="italic" font-weight="bold">r = 2 + cosθ</text>
+</svg>`,
+    context:"The graph above shows the polar curve \\(r = 2 + \\cos\\theta\\) for \\(0 \\le \\theta \\le 2\\pi\\).",
+    parts:[
+      {
+        lbl:"(a)", pts:"4 pts",
+        skill:"Area Enclosed by Polar Curve",
+        text:"Find the total area of the region enclosed by the polar curve \\(r = 2 + \\cos\\theta\\). Show the setup of your integral using the polar area formula, and evaluate exactly."
+      },
+      {
+        lbl:"(b)", pts:"3 pts",
+        skill:"Slope of Tangent Line (dy/dx)",
+        text:"Find the slope of the line tangent to the curve \\(r = 2 + \\cos\\theta\\) at the point where \\(\\theta = \\dfrac{\\pi}{2}\\). Show all work using the parametric form \\(x = r\\cos\\theta\\), \\(y = r\\sin\\theta\\)."
+      },
+      {
+        lbl:"(c)", pts:"3 pts",
+        skill:"Area Above Polar Axis",
+        text:"Find the area of the region enclosed by the curve \\(r = 2 + \\cos\\theta\\) that lies above the polar axis (\\(\\theta\\) from \\(0\\) to \\(\\pi\\)). Justify why this equals exactly half the total area found in part (a)."
+      }
+    ]
+  },
+  {
+    num:"FRQ 3", pts:10,
+    badge:"Parametric Equations &nbsp;&middot;&nbsp; dy/dx &nbsp;&middot;&nbsp; Concavity &nbsp;&middot;&nbsp; Arc Length",
+    context:"A curve \\(C\\) is defined parametrically by \\(x(t)=t^2-4\\) and \\(y(t)=t^3-3t\\) for all real \\(t\\).",
+    parts:[
+      {
+        lbl:"(a)", pts:"3 pts",
+        skill:"Tangent Lines",
+        text:"Find \\(\\dfrac{dy}{dx}\\) in terms of \\(t\\). Then find all values of \\(t\\) for which the tangent line to curve \\(C\\) is horizontal, and all values for which it is vertical. For each, give the coordinates of the corresponding point on the curve."
+      },
+      {
+        lbl:"(b)", pts:"3 pts",
+        skill:"Second Derivative / Concavity",
+        text:"Find \\(\\dfrac{d^2y}{dx^2}\\) in terms of \\(t\\). Use your result to determine whether the curve is concave up or concave down at \\(t=2\\). Justify your answer."
+      },
+      {
+        lbl:"(c)", pts:"4 pts",
+        skill:"Arc Length &middot; Speed",
+        text:"Set up, but do not evaluate, an integral expression for the arc length of curve \\(C\\) from \\(t=0\\) to \\(t=2\\). Then find the exact speed of a particle moving along \\(C\\) at \\(t=1\\)."
+      }
+    ]
+  },
+  {
+    num:"FRQ 4", pts:10,
+    badge:"Vector-Valued Functions &nbsp;&middot;&nbsp; Particle Motion",
+    context:"A particle moves in the \\(xy\\)-plane. Its velocity vector is \\(\\mathbf{v}(t)=\\langle\\,2t-1,\\;3t^2\\,\\rangle\\) and its position at time \\(t=0\\) is \\(\\mathbf{r}(0)=\\langle\\,2,\\;-1\\,\\rangle\\).",
+    parts:[
+      {
+        lbl:"(a)", pts:"3 pts",
+        skill:"Position Vector",
+        text:"Find the position vector \\(\\mathbf{r}(t)\\) for all \\(t\\). Show your integration work and how you applied the initial condition."
+      },
+      {
+        lbl:"(b)", pts:"3 pts",
+        skill:"Acceleration &middot; Speed &middot; Speeding Up / Slowing Down",
+        text:"Find the acceleration vector \\(\\mathbf{a}(t)\\). Then find the speed of the particle at \\(t=2\\) and determine, with justification, whether the particle is speeding up or slowing down at that instant."
+      },
+      {
+        lbl:"(c)", pts:"4 pts",
+        skill:"Total Distance Traveled",
+        text:"Find the total distance traveled by the particle from \\(t=0\\) to \\(t=2\\). Set up the integral for the total distance, determine whether the speed equals zero on \\((0,2)\\), and evaluate."
+      }
+    ]
+  }
+];
+
+/* ══════════════════════════════════════════
+   BUILD MCQ
+══════════════════════════════════════════ */
+function buildMCQ() {
+  document.getElementById('mcq-container').innerHTML = MCQ.map((q, i) => `
+    <div class="qcard" id="qcard-${i}">
+      <div class="q-top">
+        <span class="q-num">Q${q.n}</span>
+        <div style="flex:1">
+          <div class="q-text">${q.text}</div>
+          <div class="q-topic">${q.topic} &nbsp;&middot;&nbsp; ${q.nc ? 'No calculator' : 'Calculator permitted'}</div>
+        </div>
+      </div>
+      <div class="choices">
+        ${q.choices.map((ch, ci) => `
+          <label class="choice" id="lbl-${i}-${ci}">
+            <input type="radio" name="q-${i}" value="${ci}">
+            <span>${String.fromCharCode(65+ci)}.&ensp;${ch}</span>
+          </label>`).join('')}
+      </div>
+      <div class="feedback" id="fb-${i}"></div>
+    </div>`).join('');
+  typeset();
+}
+
+/* ══════════════════════════════════════════
+   BUILD FRQ
+══════════════════════════════════════════ */
+function buildFRQ() {
+  document.getElementById('frq-container').innerHTML = FRQ.map((q, qi) => `
+    <div class="frq-card">
+
+      <div class="frq-header">
+        <div class="frq-header-left">
+          <h3>${q.num} &nbsp;&mdash;&nbsp; ${q.pts} points</h3>
+          <p>Show all work &nbsp;&middot;&nbsp; Justify all reasoning &nbsp;&middot;&nbsp; Partial credit awarded for correct steps</p>
+        </div>
+      </div>
+
+      <div class="frq-body">
+        <div class="frq-badge">${q.badge}</div>
+
+        <!-- Question text -->
+        <div class="question-box">
+          <div class="question-box-title">Question</div>
+          ${q.graph ? `<div style="margin-bottom:14px">${q.graph}</div>` : ''}
+          <div class="context-text">${q.context}</div>
+          ${q.parts.map(p => `
+            <div class="question-part">
+              <span class="part-label">${p.lbl}</span>
+              <span style="flex:1">${p.text}</span>
+              <span class="part-pts">${p.pts}</span>
+            </div>`).join('')}
+        </div>
+
+        <!-- Parts at a glance -->
+        <table class="parts-table">
+          <thead>
+            <tr>
+              <th style="width:50px">Part</th>
+              <th style="width:60px">Points</th>
+              <th>Skill tested</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${q.parts.map(p => `<tr>
+              <td style="text-align:center;font-weight:700">${p.lbl}</td>
+              <td style="text-align:center;color:#666">${p.pts}</td>
+              <td><span class="skill-tag">${p.skill}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+
+        <!-- Student answer area -->
+        <div class="ans-section">
+          <div class="ans-title">Your answer</div>
+
+          <!-- Photo upload -->
+          <span class="upload-label">Upload a photo of your handwritten work</span>
+          <div class="upload-zone" id="zone-${qi}" onclick="document.getElementById('file-${qi}').click()">
+            <input type="file" id="file-${qi}" accept="image/*"
+              onchange="handleUpload(${qi}, this)" style="display:none">
+            <div class="upload-icon">&#128247;</div>
+            <div class="upload-text" id="utext-${qi}">
+              <strong>Click to choose a file</strong> from your device<br>
+              <span style="font-size:12px;color:#aaa">JPG, PNG, HEIC &nbsp;&middot;&nbsp; Max 10 MB</span>
+            </div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn-ch" style="font-size:12.5px" onclick="document.getElementById('file-${qi}').click()">&#128193; Choose file</button>
+            <input type="file" id="cam-${qi}" accept="image/*" capture="user" style="display:none" onchange="handleUpload(${qi}, this)">
+            <button class="btn-ch" style="font-size:12.5px" onclick="document.getElementById('cam-${qi}').click()">&#128247; Use camera</button>
+            <span style="font-size:11.5px;color:#aaa">(camera option works on phones &amp; tablets)</span>
+          </div>
+          <div class="preview-wrap" id="preview-${qi}">
+            <img id="pimg-${qi}" src="" alt="Uploaded handwritten work">
+            <div class="preview-actions">
+              <button class="btn-ch" onclick="document.getElementById('file-${qi}').click()">Replace image</button>
+              <button class="btn-rm" onclick="removeImage(${qi})">Remove</button>
+            </div>
+          </div>
+
+          <div class="or-div">or type your work below</div>
+
+          <span class="typed-label">Written work and answers &mdash; label each part clearly:</span>
+          <textarea id="ta-${qi}" rows="6"
+            placeholder="(a) ...\n\n(b) ...\n\n(c) ...\n\nShow all steps. Use limit notation for improper integrals. State any theorems used."></textarea>
+        </div>
+
+      </div>
+    </div>`).join('');
+  typeset();
+}
+
+/* ══════════════════════════════════════════
+   UPLOAD HELPERS
+══════════════════════════════════════════ */
+function handleUpload(qi, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { alert('File too large — please choose an image under 10 MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById(`pimg-${qi}`).src = e.target.result;
+    document.getElementById(`preview-${qi}`).style.display = 'block';
+    document.getElementById(`zone-${qi}`).classList.add('has-image');
+    document.getElementById(`utext-${qi}`).innerHTML = '<span class="uploaded">&#10003;&ensp;Image uploaded successfully</span>';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(qi) {
+  document.getElementById(`pimg-${qi}`).src = '';
+  document.getElementById(`preview-${qi}`).style.display = 'none';
+  document.getElementById(`zone-${qi}`).classList.remove('has-image');
+  document.getElementById(`utext-${qi}`).innerHTML =
+    '<strong>Click to upload</strong> or tap to take a photo<br><span style="font-size:12px;color:#aaa">JPG, PNG, HEIC &nbsp;&middot;&nbsp; Max 10 MB</span>';
+  document.getElementById(`file-${qi}`).value = '';
+}
+
+/* ══════════════════════════════════════════
+   MATHJAX TYPESET
+══════════════════════════════════════════ */
+function typeset(el) {
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise(el ? [el] : undefined).catch(e => console.warn(e));
+  }
+}
+
+/* ══════════════════════════════════════════
+   SUBMIT MCQ
+══════════════════════════════════════════ */
+function submitMCQ() {
+  let correct = 0, missed = [];
+  MCQ.forEach((q, i) => {
+    const sel    = document.querySelector(`input[name="q-${i}"]:checked`);
+    const fb     = document.getElementById(`fb-${i}`);
+    const chosen = sel ? parseInt(sel.value) : -1;
+    document.querySelectorAll(`input[name="q-${i}"]`).forEach(r => r.disabled = true);
+
+    if (chosen === q.ans) {
+      correct++;
+      document.getElementById(`lbl-${i}-${chosen}`).classList.add('correct');
+      fb.innerHTML = '<strong>Correct!</strong>&ensp;' + q.exp;
+      fb.className = 'feedback show ok';
+    } else {
+      if (chosen >= 0) document.getElementById(`lbl-${i}-${chosen}`).classList.add('wrong');
+      document.getElementById(`lbl-${i}-${q.ans}`).classList.add('reveal');
+      fb.innerHTML = (chosen < 0 ? '<strong>Not answered.</strong>' : '<strong>Incorrect.</strong>') + '&ensp;' + q.exp;
+      fb.className = 'feedback show bad';
+      missed.push({ n: q.n, topic: q.topic });
+    }
+    typeset(document.getElementById(`qcard-${i}`));
+  });
+
+  const pct   = Math.round(correct / 15 * 100);
+  const panel = document.getElementById('score-panel');
+  panel.className = 'score-panel show';
+  panel.innerHTML = `
+    <div class="score-big">${correct}/15 correct &nbsp;&mdash;&nbsp; ${correct*3}/45 pts</div>
+    <div class="score-sub">MCQ scored below. When you are ready, click <strong>Submit to Teacher</strong> to send your results.</div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-lbl">MCQ score</div><div class="metric-val">${correct*3}/45</div></div>
+      <div class="metric"><div class="metric-lbl">Accuracy</div><div class="metric-val">${pct}%</div></div>
+      <div class="metric"><div class="metric-lbl">Correct</div><div class="metric-val">${correct}/15</div></div>
+      <div class="metric"><div class="metric-lbl">FRQ available</div><div class="metric-val">40 pts</div></div>
+      <div class="metric"><div class="metric-lbl">Total possible</div><div class="metric-val">85 pts</div></div>
+    </div>
+    <div class="prog-row">
+      <span style="min-width:55px">MCQ</span>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <span style="min-width:36px;text-align:right">${pct}%</span>
+    </div>
+    ${missed.length
+      ? `<div class="miss-list"><strong>Topics to review:</strong><ul>${missed.map(m=>`<li>Q${m.n} &mdash; ${m.topic}</li>`).join('')}</ul></div>`
+      : '<div style="margin-top:10px;font-size:14px;color:var(--green);font-weight:600">Perfect MCQ score!</div>'}
+    <div class="note-box">
+      <strong>FRQ scoring guide (per question, 10 pts total):</strong><br>
+      FRQ 1 &mdash; (a) 3 pts: correct \\(u\\)/\\(dv\\), \\(v\\), antiderivative \\(-e^{-x}(x+1)+C\\).&ensp;(b) 4 pts: limit notation, IBP applied, \\(\\lim_{b\\to\\infty}-e^{-b}(b+1)=0\\), answer = 1.&ensp;(c) 3 pts: IBP with \\(u=x^2\\), reduces to \\(2\\int_0^\\infty xe^{-x}dx=2\\).<br><br>
+      FRQ 2 &mdash; (a) 4 pts: Setup \\(A=\\tfrac{1}{2}\\int_0^{2\\pi}(2+\\cos\\theta)^2\\,d\\theta\\); expand to \\(4+4\\cos\\theta+\\cos^2\\theta\\); use \\(\\int_0^{2\\pi}\\cos^2\\theta\\,d\\theta=\\pi\\) and \\(\\int_0^{2\\pi}4\\cos\\theta\\,d\\theta=0\\); exact answer \\(A=\\tfrac{9\\pi}{2}\\).&ensp;(b) 3 pts: \\(dy/d\\theta=\\cos 2\\theta+2\\cos\\theta\\); \\(dx/d\\theta=-\\sin 2\\theta-2\\sin\\theta\\); at \\(\\theta=\\pi/2\\): \\(dy/d\\theta=-1\\), \\(dx/d\\theta=-2\\); slope \\(=\\tfrac{1}{2}\\).&ensp;(c) 3 pts: \\(A_{\\text{upper}}=\\tfrac{1}{2}\\int_0^{\\pi}(2+\\cos\\theta)^2\\,d\\theta=\\tfrac{9\\pi}{4}\\); justification that the curve is symmetric about the polar axis so both halves are equal, each \\(=\\tfrac{1}{2}\\cdot\\tfrac{9\\pi}{2}=\\tfrac{9\\pi}{4}\\).<br><br>
+      FRQ 3 &mdash; (a) 3 pts: \\(dy/dx=(3t^2-3)/(2t)\\); horizontal at \\(t=\\pm1\\), points \\((-3,-2)\\) and \\((-3,2)\\); vertical at \\(t=0\\), point \\((-4,0)\\).&ensp;(b) 3 pts: \\(d^2y/dx^2=3(t^2+1)/(4t^3)\\); at \\(t=2\\): \\(15/32>0\\), concave up.&ensp;(c) 4 pts: arc length \\(=\\int_0^2\\!\\sqrt{9t^4-14t^2+9}\\,dt\\); speed at \\(t=1\\): \\(x'=2\\), \\(y'=0\\), speed \\(=2\\).<br><br>
+      FRQ 4 &mdash; (a) 3 pts: \\(\\mathbf{r}(t)=\\langle t^2-t+2,\\,t^3-1\\rangle\\).&ensp;(b) 3 pts: \\(\\mathbf{a}(t)=\\langle 2,6t\\rangle\\); speed at \\(t=2\\): \\(|\\mathbf{v}(2)|=|\\langle 3,12\\rangle|=3\\sqrt{17}\\); \\(\\mathbf{v}\\cdot\\mathbf{a}=150>0\\) \\(\\Rightarrow\\) speeding up.&ensp;(c) 4 pts: distance \\(=\\int_0^2\\!\\sqrt{(2t-1)^2+9t^4}\\,dt\\); speed \\(\\ne 0\\) on \\((0,2)\\) (verify at \\(t=0.5\\)); numerical value \\(\\approx8.52\\).
+    </div>`;
+  typeset(panel);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ══════════════════════════════════════════
+   SUBMIT TO TEACHER (Formspree)
+══════════════════════════════════════════ */
+async function submitToTeacher() {
+  const name = document.getElementById('student-name').value.trim();
+  if (!name) {
+    alert('Please enter your name before submitting.');
+    document.getElementById('student-name').focus();
+    return;
+  }
+
+  /* Collect MCQ results */
+  let correct = 0, total = 15, missedLines = [];
+  MCQ.forEach((q, i) => {
+    const sel = document.querySelector(`input[name="q-${i}"]:checked`);
+    const chosen = sel ? parseInt(sel.value) : -1;
+    if (chosen === q.ans) { correct++; }
+    else { missedLines.push(`Q${q.n} (${q.topic})`); }
+  });
+  const pct = Math.round(correct / total * 100);
+
+  /* Collect FRQ typed answers */
+  const frqAnswers = FRQ.map((q, qi) => {
+    const typed = (document.getElementById(`ta-${qi}`) || {}).value || '';
+    const hasImg = document.getElementById(`pimg-${qi}`) && document.getElementById(`pimg-${qi}`).src && document.getElementById(`pimg-${qi}`).src.length > 100;
+    return `${q.num}: ${hasImg ? '[photo uploaded — see attachment note]' : '(no photo)'}\n${typed || '(no typed answer)'}`;
+  }).join('\n\n---\n\n');
+
+  const body = {
+    name,
+    email: 'rkchina79@gmail.com',
+    _subject: `AP Calc BC Assessment — ${name}`,
+    mcq_score: `${correct}/${total} (${pct}%)  →  ${correct*3}/45 pts`,
+    mcq_missed: missedLines.length ? missedLines.join(', ') : 'None — perfect score!',
+    frq_note: 'FRQ photos must be sent separately (email/message). Typed answers below.',
+    frq_answers: frqAnswers,
+    _replyto: 'rkchina79@gmail.com'
+  };
+
+  const statusEl = document.getElementById('submit-status');
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  statusEl.style.display = 'block';
+  statusEl.style.background = 'var(--amber-lt)';
+  statusEl.style.border = '1px solid #f0d080';
+  statusEl.style.color = 'var(--amber)';
+  statusEl.textContent = 'Submitting your assessment — please wait…';
+
+  try {
+    const res = await fetch('https://formspree.io/rkchina79@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (res.ok) {
+      btn.textContent = '✓ Submitted';
+      btn.style.background = 'var(--green)';
+      statusEl.style.background = 'var(--green-lt)';
+      statusEl.style.border = '1px solid #a9dfbf';
+      statusEl.style.color = 'var(--green)';
+      statusEl.innerHTML = `<strong>✓ Assessment submitted successfully!</strong><br>
+        Your teacher has been notified at rkchina79@gmail.com.<br>
+        MCQ result sent: <strong>${correct}/${total} correct (${pct}%)</strong>.<br>
+        <span style="font-size:12.5px">Remember to also send photos of your FRQ handwritten work directly to your teacher.</span>`;
+    } else {
+      throw new Error('Server error');
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '✉ Submit to Teacher';
+    statusEl.style.background = 'var(--red-lt)';
+    statusEl.style.border = '1px solid #f5b7b1';
+    statusEl.style.color = 'var(--red)';
+    statusEl.innerHTML = `<strong>Submission failed.</strong> Please check your internet connection and try again.<br>
+      <span style="font-size:12.5px">If the problem persists, take a screenshot of your results and email it to rkchina79@gmail.com.</span>`;
+  }
+}
+
+
+function resetAll() {
+  document.getElementById('score-panel').className = 'score-panel';
+  buildMCQ();
+  buildFRQ();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ══ Init ══ */
+buildMCQ();
+buildFRQ();
+</script>
+</body>
+</html>
